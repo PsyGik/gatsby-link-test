@@ -1,54 +1,74 @@
-<p align="center">
-  <a href="https://www.gatsbyjs.com/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby minimal starter
-</h1>
+I am not sure if this is an issue or expected behaviour, hence creating under discussion to avoid polluting the issues section. 
 
-## 🚀 Quick start
+## Application Structure:
 
-1.  **Create a Gatsby site.**
+I have a nav bar with 3 `Links`. 
+- `/` = Home Page
+- `/about/` = About Page
+- `/contact/` = Contact Page
 
-    Use the Gatsby CLI to create a new site, specifying the minimal starter.
+The main layout is pretty straightforward:
 
-    ```shell
-    # create a new Gatsby site using the minimal starter
-    npm init gatsby
-    ```
+```jsx
+import { Link } from "gatsby";
+import React from "react";
+import "./Layout.css";
 
-2.  **Start developing.**
+export const Layout = ({ children }) => {
+  return (
+    <div className="page-container">
+      <nav className="nav">
+        <Link className="link" activeClassName="active" to="/">
+          Home
+        </Link>
+        <Link className="link" activeClassName="active" to="/about/">
+          About
+        </Link>
+        <Link className="link" activeClassName="active" to="/contact/">
+          Contact
+        </Link>
+      </nav>
+      <main className="main">{children}</main>
+      <footer className="footer">A Simple Gatsby Site</footer>
+    </div>
+  );
+};
+```
 
-    Navigate into your new site’s directory and start it up.
+Since this is a Layout, I use it in `wrapRootElement` in `gatsby-browser.js` and `gatsby-ssr.js`. 
 
-    ```shell
-    cd my-gatsby-site/
-    npm run develop
-    ```
+```jsx
+import React from "react";
+import { Layout } from "./src/components/Layout";
 
-3.  **Open the code and start customizing!**
+// Wraps every page in a component
+export const wrapRootElement = ({ element, props }) => {
+  return <Layout {...props}>{element}</Layout>;
+};
+```
 
-    Your site is now running at http://localhost:8000!
+The page looks like this:
+![image](https://user-images.githubusercontent.com/5432911/119249371-9ea4b080-bbb5-11eb-8004-3bb9db6cf3d7.png)
 
-    Edit `src/pages/index.js` to see your site update in real-time!
+## Problem:
 
-4.  **Learn more**
+Initial page load is fine. `activeClassName` adds the class to `Home` as expected. The problem however, occurs on a page reload. Here's a video which demonstrates that:
 
-    - [Documentation](https://www.gatsbyjs.com/docs/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+https://user-images.githubusercontent.com/5432911/119249393-e3c8e280-bbb5-11eb-927a-99104ad4b6df.mov
 
-    - [Tutorials](https://www.gatsbyjs.com/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+**Steps to replicate:**
+- Clone the repo: https://github.com/PsyGik/gatsby-link-test
+- `npm install` && `npm run develop`
+- Navigate to browser
+- Goto to either `/about/` or `/contact/`
+- Reload the page
+- `Home` is highlighted, even though the page is on `/about/` or `/contact/`
+- If I am on `/about/`, clicking on `/about/` has no effect. 
+- In order to have the `activeClassName` working as before, I need to navigate to `/` and then it works like before. 
 
-    - [Guides](https://www.gatsbyjs.com/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+## Questions:
 
-    - [API Reference](https://www.gatsbyjs.com/docs/api-reference/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+- Is this the intended behaviour of `activeClassName`?
+- `partiallyActive` is not being used here. So why is the `/` still getting active styles even though it isn't the active page?
+- If I have to use [`getProps`](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-link/#use-getprops-for-advanced-link-styling) to fix this behaviour, then isn't this a bug with `Link` component?
 
-    - [Plugin Library](https://www.gatsbyjs.com/plugins?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-    - [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-## 🚀 Quick start (Gatsby Cloud)
-
-Deploy this starter with one click on [Gatsby Cloud](https://www.gatsbyjs.com/cloud/):
-
-[<img src="https://www.gatsbyjs.com/deploynow.svg" alt="Deploy to Gatsby Cloud">](https://www.gatsbyjs.com/dashboard/deploynow?url=https://github.com/gatsbyjs/gatsby-starter-minimal)
