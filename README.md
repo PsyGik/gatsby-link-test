@@ -1,4 +1,4 @@
-I am not sure if this is an issue or expected behaviour, hence creating under discussion to avoid polluting the issues section. 
+# REF: https://github.com/gatsbyjs/gatsby/discussions/31548
 
 ## Application Structure:
 
