@@ -58,7 +58,7 @@ https://user-images.githubusercontent.com/5432911/119249393-e3c8e280-bbb5-11eb-9
 
 **Steps to replicate:**
 - Clone the repo: https://github.com/PsyGik/gatsby-link-test
-- `npm install` && `npm run develop`
+- `npm install` && `npm run build` && `npm run serve`
 - Navigate to browser
 - Goto to either `/about/` or `/contact/`
 - Reload the page
